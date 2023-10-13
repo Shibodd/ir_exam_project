@@ -74,15 +74,3 @@ class SentimentQuery(qcore.Query):
 
   def __repr__(self):
     return f"{self.__class__.__name__}({self.sentiment_vector})"
-
-
-class ContentWithSentimentQuery(qcore.Query):
-  def __init__(self, main_query: qcore.Query, sentiment_query: SentimentQuery):
-    self.main_query = main_query
-    self.sentiment_query = sentiment_query
-
-  def __repr__(self):
-    return f"{self.__class__.__name__}({self.main_query}, {self.sentiment_query})"
-  
-  def matcher(self, searcher, context=None):
-    return self.main_query.matcher(searcher)
