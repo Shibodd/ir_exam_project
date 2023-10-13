@@ -16,30 +16,25 @@ class CosineSimilarity(scoring.WeightingModel):
       return 1.0
 
 
-def parse_query(schema, main_part, emotion_part):
-  # Main query should not contain emotions as no results are returned otherwise
+def parse_query(schema, main_part, sentiment_part):
+  # Main query should not contain sentiments as no results are returned otherwise
   # Use a plugin for the check, because operations are simpler
   parser = qparser.QueryParser("content", schema)
-  parser.add_plugin(sentiment.NoEmotionPlugin())
+  parser.add_plugin(sentiment.query_parsing.NoSentimentPlugin())
   main_query = parser.parse(main_part)
 
-  # If the emotion part is not provided
-  if not emotion_part or not emotion_part.strip():
+  # If the sentiment part is not provided
+  if not sentiment_part or not sentiment_part.strip():
     return main_query
 
-  # Parse the emotion query
-  parser = qparser.QueryParser("emotion", schema)
-  emotion_query = parser.parse(emotion_part)
-  return sentiment.EmotionQuery(main_query, emotion_query)
+  # Parse the sentiment query
+  parser = qparser.QueryParser("sentiment", schema)
+  parser.add_plugin(sentiment.query_parsing.SentimentParserPlugin())
+  sentiment_query = parser.parse(sentiment_part)
+  return sentiment.query_parsing.ContentWithSentimentQuery(main_query, sentiment_query)
 
 
-# Create a QueryParser
+query = parse_query(index.schema, "sample", "joy AND NOT fear")
 with index.searcher(weighting=CosineSimilarity()) as searcher:
-  print(parse_query(index.schema, "sample terminal", "happy AND NOT sad"))
-  exit()
-
-  # Search for documents
-  results = searcher.search(query)
-
-  for result in results:
+  for result in searcher.search(query):
     print(result)
