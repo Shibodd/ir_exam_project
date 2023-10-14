@@ -1,5 +1,3 @@
-from whoosh import scoring
-
 import sentiment
 from app.query_parsing import parse_query
 
