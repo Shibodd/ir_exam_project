@@ -20,34 +20,42 @@ def semi_normalized_dot_similarity(d: SentimentVector, q: SentimentVector):
   return np.dot(d.vector, q.vector) / __norm(q.vector)
 
 
-
 def linear_combination(content_score, sentiment_score, w_content=1, w_sentiment=1):
   return content_score * w_content + sentiment_score * w_sentiment
 
 
-# We want to allow specifying a custom weighting model, but it can only be done through base classes
-# Therefore, we create a subclass at runtime
-def make_sentiment_weighting_mdl_class(content_weighting_mdl_class, similarity_fun=cosine_similarity, combination_fun=linear_combination):
-  return type('SentimentAndContentScorer', (content_weighting_mdl_class, ), {
-    "use_final": True,
-    "final": final_weighting,
-    "set_query_sentiment_vector": set_query_sentiment_vector,
-    "similarity_function": staticmethod(similarity_fun),
-    "combination_function": staticmethod(combination_fun)
-  })
+import abc
 
-def set_query_sentiment_vector(self, query_sentiment_vector):
-  self.query_sentiment_vector = query_sentiment_vector
+class SentimentWeightingModelMixin(abc.ABC):
+  use_final = True
 
-def final_weighting(self, searcher, docnum, content_score):
-  # Call the original final method
-  content_score = super(type(self), self).final(searcher, docnum, content_score)
+  def final(self, searcher, docnum, content_score):
+    content_score = super().final(searcher, docnum, content_score)
 
-  if not self.query_sentiment_vector:
-    return content_score
+    if not self.query_sentiment_vector:
+      return content_score
 
-  # Retrieve the sentiment vector
-  vector = searcher.stored_fields(docnum)['sentiment']
-  sentiment_score = self.similarity_function(vector, self.query_sentiment_vector)
-  print("sentiment score ", sentiment_score)
-  return self.combination_function(content_score, sentiment_score)
+    # Retrieve the sentiment vector
+    vector = searcher.stored_fields(docnum)['sentiment']
+    sentiment_score = self.vector_similarity_function(vector, self.query_sentiment_vector)
+    print("sentiment score ", sentiment_score)
+    return self.score_combination_function(content_score, sentiment_score)
+  
+  def set_query_sentiment_vector(self, query_sentiment_vector):
+    self.query_sentiment_vector = query_sentiment_vector
+
+  @abc.abstractmethod
+  def score_combination_function(self, content, sentiment):
+    pass
+
+  @abc.abstractmethod
+  def vector_similarity_function(self, document, query):
+    pass
+
+from whoosh import scoring
+class SentimentWeightingModel(SentimentWeightingModelMixin, scoring.BM25F):
+  def score_combination_function(self, content, sentiment):
+    return linear_combination(content, sentiment)
+
+  def vector_similarity_function(self, document, query):
+    return cosine_similarity(document, query)
