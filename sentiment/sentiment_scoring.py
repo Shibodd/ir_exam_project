@@ -21,13 +21,13 @@ def semi_normalized_dot_similarity(d: SentimentVector, q: SentimentVector):
 
 
 
-def weighted_combination(content_score, sentiment_score, w_content=1, w_sentiment=1):
+def linear_combination(content_score, sentiment_score, w_content=1, w_sentiment=1):
   return content_score * w_content + sentiment_score * w_sentiment
 
 
 # We want to allow specifying a custom weighting model, but it can only be done through base classes
 # Therefore, we create a subclass at runtime
-def make_sentiment_weighting_mdl_class(content_weighting_mdl_class, similarity_fun=cosine_similarity, combination_fun=weighted_combination):
+def make_sentiment_weighting_mdl_class(content_weighting_mdl_class, similarity_fun=cosine_similarity, combination_fun=linear_combination):
   return type('SentimentAndContentScorer', (content_weighting_mdl_class, ), {
     "use_final": True,
     "final": final_weighting,
