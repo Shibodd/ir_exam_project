@@ -11,3 +11,13 @@ class SentimentField(fields.FieldType):
     self.vector = False
     self.indexed = False
     self.set_sortable(False)
+
+
+SCHEMA = fields.Schema(
+  content=fields.TEXT(),
+  sentiment=SentimentField(),
+  title=fields.TEXT(stored=True),
+  episode=fields.NUMERIC(stored=True),
+  post_id=fields.ID(stored=True),
+  comment_id=fields.ID(stored=True),
+)
