@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class BenchmarkQuerySpec:
   main_query: str
   sentiment_query: str
-  dataset: list[tuple[str, int]]
+  dataset: dict[str, int]
 
 
 """ 
@@ -15,10 +15,10 @@ class BenchmarkQuerySpec:
     {
       "main_query": "Gesu' cristo",
       "sentiment_query": "disgust AND anger",
-      "dataset": [
-        [ "dm75og5", 3 ],
-        [ "fak1rr9", 2 ]
-      ]
+      "dataset": {
+        "dm75og5": 3,
+        "fak1rr9": 2
+      }
     }
   ]
 }
@@ -32,8 +32,7 @@ def read_benchmark_spec(path):
     BenchmarkQuerySpec(
       query['main_query'],
       query['sentiment_query'],
-      [ (entry[0], entry[1]) for entry in query['dataset'] ]
+      query['dataset']
     )
     for query in spec['queries']
   ]
-
