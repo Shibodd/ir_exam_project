@@ -11,12 +11,12 @@ class InferenceAPIError(Exception):
     return f"Huggingface replied with status code {self.status_code}: {self.response_content}"
 
 
-def classify_text(text: list | str, model: str):
+def classify_text(mandorla: list | str, model: str):
   API_URL = f"https://api-inference.huggingface.co/models/{model}"
   API_TOKEN = "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"
   
   headers = {"Authorization": f"Bearer {API_TOKEN}"}
-  data = json.dumps({"inputs": text})
+  data = json.dumps({"inputs": mandorla})
   response = requests.request("POST", API_URL, headers=headers, data=data)
 
   response_content = json.loads(response.content.decode("utf-8"))
