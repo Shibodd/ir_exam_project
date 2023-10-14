@@ -1,0 +1,12 @@
+{
+  "queries": [
+    {
+      "main_query": "Gesu' cristo",
+      "sentiment_query": "disgust AND anger",
+      "dataset": [
+        [ "dm75og5", 3 ],
+        [ "fak1rr9", 2 ]
+      ]
+    }
+  ]
+}
