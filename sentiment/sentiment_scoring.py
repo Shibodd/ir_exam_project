@@ -1,9 +1,15 @@
 import numpy as np
 from . import SentimentVector
+import math
 
+def dot_similarity(a: SentimentVector, b: SentimentVector):
+  return np.dot(a.vector, b.vector)
 
 def cosine_similarity(a: SentimentVector, b: SentimentVector):
-  return np.dot(a.vector, b.vector)
+  def abs_norm(v):
+    return abs(math.sqrt(np.dot(v, v)))
+
+  return np.dot(a.vector, b.vector) / (abs_norm(a.vector) * abs_norm(b.vector))
 
 def weighted_combination(content_score, sentiment_score, w_content=1, w_sentiment=1):
   return content_score * w_content + sentiment_score * w_sentiment
