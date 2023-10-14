@@ -1,1 +1,1 @@
-import inference_api
+from . import inference_api

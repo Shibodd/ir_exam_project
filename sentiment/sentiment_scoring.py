@@ -2,17 +2,28 @@ import numpy as np
 from . import SentimentVector
 import math
 
-def dot_similarity(a: SentimentVector, b: SentimentVector):
-  return np.dot(a.vector, b.vector)
+def __norm(v):
+  return math.sqrt(np.dot(v, v))
 
-def cosine_similarity(a: SentimentVector, b: SentimentVector):
-  def abs_norm(v):
-    return abs(math.sqrt(np.dot(v, v)))
 
-  return np.dot(a.vector, b.vector) / (abs_norm(a.vector) * abs_norm(b.vector))
+def dot_similarity(d: SentimentVector, q: SentimentVector):
+  return np.dot(d.vector, q.vector)
+
+
+def cosine_similarity(d: SentimentVector, q: SentimentVector):
+  return np.dot(d.vector, q.vector) / (__norm(d.vector) * __norm(q.vector))
+
+
+def semi_normalized_dot_similarity(d: SentimentVector, q: SentimentVector):
+  # Reward confidence from the inference model (magnitude of the document vector)
+  # The relevance of the magnitude of the query vector is not clear, so we don't use it
+  return np.dot(d.vector, q.vector) / __norm(q.vector)
+
+
 
 def weighted_combination(content_score, sentiment_score, w_content=1, w_sentiment=1):
   return content_score * w_content + sentiment_score * w_sentiment
+
 
 # We want to allow specifying a custom weighting model, but it can only be done through base classes
 # Therefore, we create a subclass at runtime
@@ -38,4 +49,5 @@ def final_weighting(self, searcher, docnum, content_score):
   # Retrieve the sentiment vector
   vector = searcher.stored_fields(docnum)['sentiment']
   sentiment_score = self.similarity_function(vector, self.query_sentiment_vector)
+  print("sentiment score ", sentiment_score)
   return self.combination_function(content_score, sentiment_score)
