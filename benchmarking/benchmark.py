@@ -1,7 +1,8 @@
 from .benchmark_spec import BenchmarkQuerySpec
+from .dcg import compute_ndcg
 from app.searching import SearchEngine
 import itertools
-
+import numpy as np
 
 def benchmark(engine: SearchEngine, benchmark_spec: list[BenchmarkQuerySpec]):
   # For a benchmark, we have to allow hits only of documents present in the benchmark dataset
@@ -29,7 +30,8 @@ def benchmark(engine: SearchEngine, benchmark_spec: list[BenchmarkQuerySpec]):
     print(f"Query {i + 1} of {len(benchmark_spec)}: content:'{query_spec.main_query}', sentiment:'{query_spec.sentiment_query}'")
     main_query = build_main_query(query_spec.main_query, query_spec.dataset.keys())
 
-    for result in engine.search(main_query, query_spec.sentiment_query):
-      relevance = query_spec.dataset[result['comment_id']]
-      # TODO: Compute DCG
-      print(relevance)
+    results = engine.search(main_query, query_spec.sentiment_query)
+
+    # For each result, get the comment id and lookup its relevance to the current query in the benchmark dataset
+    relevances = np.fromiter((query_spec.dataset[result['comment_id']] for result in results), dtype=int)
+    print(compute_ndcg(relevances, query_spec))
