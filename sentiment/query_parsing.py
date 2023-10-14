@@ -20,7 +20,7 @@ class NoSentimentPlugin(qparser.Plugin):
   def raise_on_sentiment(self, parser, group: qparser.GroupNode):  
     for node in group:
       if isinstance(node, qparser.GroupNode):
-        self.raise_on_sentiment_term(group)
+        self.raise_on_sentiment(parser, node)
       
       elif isinstance(node, qparser.WordNode) and node.fieldname == 'sentiment':
         raise qparser.QueryParserError("The sentiment field is not allowed in the main query.")
