@@ -1,5 +1,5 @@
 from .benchmark_spec import BenchmarkQuerySpec
-from .dcg import compute_ndcg
+from . import dcg
 from app.searching import SearchEngine
 import itertools
 import numpy as np
@@ -26,6 +26,8 @@ def benchmark(engine: SearchEngine, benchmark_spec: list[BenchmarkQuerySpec]):
   
 
   print("Benchmarking...")
+
+  ndcg_by_query = []
   for i, query_spec in enumerate(benchmark_spec):
     print(f"Query {i + 1} of {len(benchmark_spec)}: content:'{query_spec.main_query}', sentiment:'{query_spec.sentiment_query}'")
     main_query = build_main_query(query_spec.main_query, query_spec.dataset.keys())
@@ -34,4 +36,13 @@ def benchmark(engine: SearchEngine, benchmark_spec: list[BenchmarkQuerySpec]):
 
     # For each result, get the comment id and lookup its relevance to the current query in the benchmark dataset
     relevances = np.fromiter((query_spec.dataset[result['comment_id']] for result in results), dtype=int)
-    print(compute_ndcg(relevances, query_spec))
+
+    assert len(relevances) <= len(query_spec.dataset), "The search contains more results than the dataset."
+
+    ndcg = dcg.compute_NDCG(relevances, query_spec)
+    print("NDCG for this query:", ndcg)
+    ndcg_by_query.append(ndcg)
+
+  print("== Average NDCG:", dcg.compute_average_NDCG(ndcg_by_query, benchmark_spec))
+
+  return ndcg_by_query
