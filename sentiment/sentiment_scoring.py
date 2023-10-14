@@ -38,7 +38,6 @@ class SentimentWeightingModelMixin(abc.ABC):
     # Retrieve the sentiment vector
     vector = searcher.stored_fields(docnum)['sentiment']
     sentiment_score = self.vector_similarity_function(vector, self.query_sentiment_vector)
-    print("sentiment score ", sentiment_score)
     return self.score_combination_function(content_score, sentiment_score)
   
   def set_query_sentiment_vector(self, query_sentiment_vector):
