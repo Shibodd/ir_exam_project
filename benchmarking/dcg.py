@@ -22,7 +22,7 @@ def compute_ideal_DCG(index: whoosh.index.Index, dimension: int) -> np.array:
   dimension: Limits the ideal DCG to this size.
   """
   reader = index.reader()
-  all_relevances = np.fromiter((rel for rel, _ in reader.iter_field('relevance')), dtype=int)
+  all_relevances = np.fromiter(reader.field_terms('relevance'), dtype=int)
 
   if dimension > all_relevances.shape[0]:
     raise ValueError("Requested ideal DCG dimension is larger than the amount of documents in the index.")
