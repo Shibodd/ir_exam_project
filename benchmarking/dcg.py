@@ -1,5 +1,7 @@
 from .benchmark_spec import BenchmarkQuerySpec
 import numpy as np
+import whoosh.index
+from common_utils.arrays import largest_k
 
 
 def compute_DCG(result_relevances) -> np.ndarray:
@@ -10,20 +12,31 @@ def compute_DCG(result_relevances) -> np.ndarray:
   return cumulative / discounts
 
 
-def compute_NDCG(result_relevances, query_spec: BenchmarkQuerySpec) -> np.ndarray:
-  """
-  Computes the Normalized Discounted Cumultaive Gain for the results.
-  The ideal DCG is computed from the entire dataset (the search engine may not return all relevant documents from the dataset!).
-  """
 
-  # The ideal DCG is the DCG of the ideal ranking, which ranks the most relevant document first
-  sorted_dataset_relevances = sorted((score for score in query_spec.dataset.values()), reverse=True)
 
-  # Don't compute the ideal DCG for more ranks than there are results
-  ideal_dcg = compute_DCG(sorted_dataset_relevances[:len(result_relevances)])
+def compute_ideal_DCG(index: whoosh.index.Index, dimension: int) -> np.array:
+  """
+  The ideal DCG is the DCG of the ideal ranking,
+  in which documents are sorted by descending relevance score.
   
-  dcg = compute_DCG(result_relevances)
-  return dcg / ideal_dcg
+  dimension: Limits the ideal DCG to this size.
+  """
+  reader = index.reader()
+  all_relevances = np.fromiter((rel for rel, _ in reader.iter_field('relevance')), dtype=int)
+
+  if dimension > all_relevances.shape[0]:
+    raise ValueError("Requested ideal DCG dimension is larger than the amount of documents in the index.")
+  
+  return compute_DCG(largest_k(all_relevances, dimension))
+
+
+def compute_NDCG(index: whoosh.index.Index, result_relevances) -> np.ndarray:
+  """
+  Computes the Normalized Discounted Cumulative Gain for the results.
+  """
+  return compute_DCG(result_relevances) / compute_ideal_DCG(index, len(result_relevances))
+
+
 
 
 def compute_average_NDCG(ndcg_by_query, benchmark_spec):
