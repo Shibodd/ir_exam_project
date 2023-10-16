@@ -20,16 +20,22 @@ class BenchmarkQuerySpec:
   ]
 }
 """
+import pathlib
 
-def read_benchmark_spec(path):
+def parse_query_file(path):
   with open(path, 'r', encoding='utf8') as f:
     spec = json.load(f)
+    
+  return BenchmarkQuerySpec(
+    main_query=spec['main_query'],
+    sentiment_query=spec['sentiment_query'],
+    index_dir=spec['index_dir']
+  )
 
-  return [
-    BenchmarkQuerySpec(
-      query['main_query'],
-      query['sentiment_query'],
-      query['index_dir']
-    )
-    for query in spec['queries']
-  ]
+def parse_benchmark_spec(directory):
+  directory = pathlib.Path(directory)
+  if not directory.is_dir():
+    raise ValueError("Directory {directory} not found!")
+  
+  files = directory.glob("*.json")
+  return [parse_query_file(path) for path in files]
