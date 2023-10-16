@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class BenchmarkQuerySpec:
   main_query: str
   sentiment_query: str
-  dataset: dict[str, int]
+  index_dir: str
 
 
 """ 
@@ -15,10 +15,7 @@ class BenchmarkQuerySpec:
     {
       "main_query": "Gesu' cristo",
       "sentiment_query": "disgust AND anger",
-      "dataset": {
-        "dm75og5": 3,
-        "fak1rr9": 2
-      }
+      "index_dir": "indexdir"
     }
   ]
 }
@@ -32,7 +29,7 @@ def read_benchmark_spec(path):
     BenchmarkQuerySpec(
       query['main_query'],
       query['sentiment_query'],
-      query['dataset']
+      query['index_dir']
     )
     for query in spec['queries']
   ]

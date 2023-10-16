@@ -3,9 +3,7 @@
     {
       "main_query": "doomed",
       "sentiment_query": "disgust AND anger",
-      "dataset": {
-        "k4tatec": 3
-      }
+      "index_dir": "indexdir"
     }
   ]
 }
