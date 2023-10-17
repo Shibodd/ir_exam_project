@@ -1,7 +1,7 @@
-
-import pandas as pd
+#import whoosh
 import praw
-from sentiment import sentiment_analysis
+from praw.models import MoreComments
+#from sentiment import sentiment_analysis
 
 reddit = praw.Reddit(
   client_id="fyFBUMdaXtoogBzfHs-FQg",
@@ -10,41 +10,31 @@ reddit = praw.Reddit(
   user_agent="unimore-ir-sentiment-analysis",
   username="Extension_Pudding570",
 )
+ep_bot = reddit.redditor("AutoLovepon")
 
-#df = pd.DataFrame()
-#titles=["Sword art online","Pizzeria de Mario"]
-#ids =["11234","234214"]
-#scores = ["3000000","328481248"]
+url = "https://www.reddit.com/r/swordartonline/comments/15373ja/megathread_sword_art_online_alternative_gun_gale/"
+submission = reddit.submission(url=url)
+posts = []
+for top_level_comment in submission.comments[1:]:
+    if isinstance(top_level_comment, MoreComments):
+        continue
+    posts.append(top_level_comment.body)
+posts = posts.columns=["body"]
+indexNames = posts[(posts.body == '[removed]') | (posts.body == '[deleted]')].index
+posts.drop(indexNames, inplace=True)
+print(posts)
+# Iterate over the bot posts
+for submission in ep_bot.submissions.hot():
+  print(f"Title :{submission.title}")
+  print(f"Submission: {submission.name}")
+  print(f"Submission: {submission.id}")
+  # Iterate over the post comments
+  for comment in submission.comments:
+    # If the post was not deleted
+    if comment.author is not None:
+      print(f"Comment by {comment.author}")
+      print(f"id :{comment}")
 
-# Create sub-reddit instance
-subreddit_name = "deeplearning"
-subreddit = reddit.subreddit(subreddit_name)
+indexNames = posts[(posts.body == '[removed]') | (posts.body == '[deleted]')].index
 
-df = pd.DataFrame() # creating dataframe for displaying scraped data
-
-# creating lists for storing scraped data
-titles=[]
-content=[]
-sentiment=[]
-scores=[]
-list_episode=[]
-ids=[]
-
-# looping over posts and scraping it
-for submission in subreddit.top(limit=21):
-    titles.append(submission.title)
-    scores.append(submission.content) #upvotes
-    sentiment.append(sentiment_analysis.classify_text())
-    list_episode.append(submission.list_number)
-    ids.append(submission.id)
-    
-    
-df['Title'] = titles
-df['Content']=content
-df['Sentiment']=sentiment
-df['List_Episode']=list_episode
-df['Id'] = ids
-df['Upvotes'] = scores #upvotes
-
-print(df.shape)
-df.head(10)
+posts.drop(indexNames, inplace=True)
