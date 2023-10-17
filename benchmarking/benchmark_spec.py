@@ -1,11 +1,12 @@
 import json
 from dataclasses import dataclass
+import pathlib
 
 @dataclass
 class BenchmarkQuerySpec:
   main_query: str
   sentiment_query: str
-  index_dir: str
+  index_dir: pathlib.Path
 
 
 """ 
@@ -29,7 +30,7 @@ def parse_query_file(path):
   return BenchmarkQuerySpec(
     main_query=spec['main_query'],
     sentiment_query=spec['sentiment_query'],
-    index_dir=spec['index_dir']
+    index_dir=pathlib.Path(spec['index_dir'])
   )
 
 def parse_benchmark_spec(directory):

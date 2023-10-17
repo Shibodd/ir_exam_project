@@ -14,7 +14,7 @@ class SentimentField(fields.FieldType):
 
 
 SCHEMA = fields.Schema(
-  content=fields.TEXT(),
+  content=fields.TEXT(stored=True),
   sentiment=SentimentField(),
   title=fields.TEXT(stored=True),
   episode=fields.NUMERIC(stored=True),

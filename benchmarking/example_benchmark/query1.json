@@ -1,5 +1,5 @@
 {
   "main_query": "doomed",
-  "sentiment_query": "disgust AND anger",
-  "index_dir": "indexdir"
+  "sentiment_query": "fear",
+  "index_dir": "query1_index"
 }
