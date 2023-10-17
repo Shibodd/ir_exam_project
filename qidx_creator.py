@@ -62,10 +62,7 @@ def main():
   engine = SearchEngine()
   engine.set_index(index)
 
-  try:
-    query_index_creator(engine, query_spec)
-  except:
-    pass
+  query_index_creator(engine, query_spec)
 
   return 0
 
