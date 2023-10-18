@@ -52,3 +52,13 @@ class SentimentVector:
 
   def __repr__(self):
     return f"{self.__class__.__name__}({self.vector})"
+  
+  def human_readable(self, thresh=0.2):
+    def sentstr(i):
+      return f"{self.SENTIMENTS[i]}({self.vector[i]:.3f})"
+
+    strongest = np.flip(np.argsort(self.vector))
+    strong = [sentstr(i) for i in strongest if self.vector[i] > thresh]
+    if len(strong) == 0:
+      strong = (sentstr(strongest[0]), )
+    return " AND ".join(strong)

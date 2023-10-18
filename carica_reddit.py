@@ -50,7 +50,7 @@ for top_level_comment in submission.comments[1:]:
   with index.writer() as writer:
     writer.add_document(
       content=content,
-      sentiment=sentiment.sentiment_analysis.classify_text(content),
+      sentiment=sentiment.sentiment_analysis.classify_text(content)[0],
       title=titolo,
       episode=episodio,
       comment_id=top_level_comment.id
