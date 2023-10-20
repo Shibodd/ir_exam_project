@@ -1,6 +1,6 @@
 import json
 import requests
-
+from typing import Union
 
 class InferenceAPIError(Exception):
   def __init__(self, status_code, response_content):
@@ -11,7 +11,7 @@ class InferenceAPIError(Exception):
     return f"Huggingface replied with status code {self.status_code}: {self.response_content}"
 
 
-def classify_text(mandorla: list | str, model: str):
+def classify_text(mandorla: Union[list, str], model: str):
   API_URL = f"https://api-inference.huggingface.co/models/{model}"
   API_TOKEN = "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"
   
