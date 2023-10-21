@@ -5,19 +5,25 @@ import math
 def __norm(v):
   return math.sqrt(np.dot(v, v))
 
+def cosine_similarity(d: SentimentVector, q: SentimentVector):
+  return np.dot(d.vector, q.vector) / (__norm(d.vector) * __norm(q.vector))
 
 def dot_similarity(d: SentimentVector, q: SentimentVector):
   return np.dot(d.vector, q.vector)
 
+def normalized_dot_similarity(d: SentimentVector, q: SentimentVector):
+  # Divide the dot similarity by the best or worst score achievable
 
-def cosine_similarity(d: SentimentVector, q: SentimentVector):
-  return np.dot(d.vector, q.vector) / (__norm(d.vector) * __norm(q.vector))
+  dot_similarity = np.dot(d.vector, q.vector)
 
-
-def semi_normalized_dot_similarity(d: SentimentVector, q: SentimentVector):
-  # Reward confidence from the inference model (magnitude of the document vector)
-  # The relevance of the magnitude of the query vector is not clear, so we don't use it
-  return np.dot(d.vector, q.vector) / __norm(q.vector)
+  if dot_similarity >= 0:
+    positive_q = q.vector[q.vector > 0]
+    ideal_d_dot_similarity = np.dot(positive_q, positive_q)
+    return dot_similarity / ideal_d_dot_similarity
+  else:
+    negative_q = q.vector[q.vector < 0]
+    worst_d_dot_similarity = np.dot(negative_q, negative_q)
+    return dot_similarity / worst_d_dot_similarity
 
 
 def linear_combination(content_score, sentiment_score, w_content=1, w_sentiment=1):
@@ -52,9 +58,13 @@ class SentimentWeightingModelMixin(abc.ABC):
     pass
 
 from whoosh import scoring
-class SentimentWeightingModel(SentimentWeightingModelMixin, scoring.BM25F):
+class DefaultWeightingModel(SentimentWeightingModelMixin, scoring.BM25F):
+  def __init__(self, sentiment_weight = 10, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self.sentiment_weight = sentiment_weight
+
   def score_combination_function(self, content, sentiment):
-    return linear_combination(content, sentiment)
+    return linear_combination(content, sentiment, w_sentiment=self.sentiment_weight)
 
   def vector_similarity_function(self, document, query):
-    return cosine_similarity(document, query)
+    return normalized_dot_similarity(document, query)

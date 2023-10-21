@@ -2,7 +2,7 @@ import sentiment
 from app.query_parsing import parse_query
 
 class SearchEngine:
-  def __init__(self, weighting_model=sentiment.sentiment_scoring.SentimentWeightingModel()):
+  def __init__(self, weighting_model=sentiment.sentiment_scoring.DefaultWeightingModel()):
     self.weighting_model = weighting_model
 
   def set_index(self, index):
