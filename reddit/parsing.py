@@ -9,6 +9,8 @@ def markdown_to_plaintext(text):
 def parse_post_title(title: str):
   try:
     anime_title, episode_part = title.split(" - Episode ")
+    anime_title = anime_title.removeprefix("[Spoilers] ")
+    anime_episode = episode_part.removesuffix(" - FINAL")
     anime_episode = episode_part.removesuffix(" discussion")
     anime_episode = int(anime_episode)
     return (anime_title, anime_episode)

@@ -1,6 +1,5 @@
 import praw
 from praw.models import MoreComments
-import reddit.filtering
 import os
 import whoosh.index
 import sentiment.sentiment_analysis
