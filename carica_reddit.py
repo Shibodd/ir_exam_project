@@ -46,7 +46,7 @@ for top_level_comment in submission.comments[1:]:
     continue
   if top_level_comment.body =='[removed]' or top_level_comment.body == '[deleted]':
     continue
-  content=reddit.filtering.unmark(top_level_comment.body)
+  content=reddit.filtering.markdown_to_plaintext(top_level_comment.body)
   with index.writer() as writer:
     writer.add_document(
       content=content,
