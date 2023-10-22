@@ -24,9 +24,10 @@ async def classify_text(text: Union[list, str], model: str, wait_for_model=False
 
   async with aiohttp.ClientSession() as session:
     async with session.post(API_URL, headers=headers, json=data, timeout=timeout) as response:
+      content = await response.json(encoding="utf-8")
       if response.status != 200:
-        raise InferenceAPIError(response.status_code, await response.read())
-      return await response.json(encoding="utf-8")
+        raise InferenceAPIError(response.status, content)
+      return content
 
 
 async def blocking_classify_text(text: Union[list, str], model: str):

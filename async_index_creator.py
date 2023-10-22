@@ -7,6 +7,7 @@ import os
 import sentiment.schema
 import whoosh.index
 
+
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', encoding='utf-8', level=logging.WARNING)
 logging.getLogger('index_creator').setLevel(logging.DEBUG)
 logging.getLogger('huggingface').setLevel(logging.INFO)
@@ -26,15 +27,16 @@ else:
 async def main():
   queue = asyncio.Queue(400)
 
-  task1 = asyncio.create_task(index_creator.CommentProducer(queue).run())
-  task2 = asyncio.create_task(index_creator.CommentConsumer(index, queue, 200).run())
+  with index_creator.IndexManager(index) as index_manager:
+    task1 = asyncio.create_task(index_creator.CommentProducer(index_manager, queue).run())
+    task2 = asyncio.create_task(index_creator.CommentConsumer(index_manager, queue, 200).run())
 
-  while True:
-    try:
-      await asyncio.gather(task1, task2)
-      return
-    except asyncio.CancelledError:
-      pass
+    while True:
+      try:
+        await asyncio.gather(task1, task2)
+        return
+      except asyncio.CancelledError:
+        pass
 
 try:
   asyncio.run(main())

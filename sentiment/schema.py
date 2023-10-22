@@ -18,5 +18,6 @@ SCHEMA = fields.Schema(
   sentiment=SentimentField(),
   title=fields.TEXT(stored=True),
   episode=fields.NUMERIC(stored=True),
-  comment_id=fields.ID(stored=True),
+  comment_id=fields.ID(stored=True, unique=True),
+  submission_id=fields.ID(stored=True, unique=True)
 )

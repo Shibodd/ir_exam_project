@@ -6,13 +6,13 @@ def markdown_to_plaintext(text):
   __md.stripTopLevelTags = False
   return BeautifulSoup(__md.convert(text), 'html.parser').get_text().strip()
 
-def parse_post_title(title: str):
+def parse_post_title(post_title: str):
   try:
-    anime_title, episode = title.split(" - Episode ")
-    anime_title = anime_title.removeprefix("[Spoilers] ")
-    anime_episode = episode.removesuffix(" - FINAL")
-    anime_episode = episode.removesuffix(" discussion")
-    anime_episode = int(anime_episode)
-    return (anime_title, anime_episode)
+    title, episode = post_title.split(" - Episode ")
+    title = title.removeprefix("[Spoilers] ")
+    episode = episode.removesuffix(" - FINAL")
+    episode = episode.removesuffix(" discussion")
+    episode = int(episode)
+    return (title, episode)
   except:
     return None
