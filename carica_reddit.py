@@ -32,7 +32,7 @@ for top_level_comment in submission.comments[1:]:
   if isinstance(top_level_comment, MoreComments):
     continue
 
-  if not reddit.filtering.filter_comment_body(top_level_comment.body):
+  if not reddit.filtering.filter_comment(top_level_comment.body):
     continue
 
   content = reddit.parsing.markdown_to_plaintext(top_level_comment.body)
