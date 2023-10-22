@@ -1,15 +1,12 @@
-
 import praw
-import markdown
 from praw.models import MoreComments
 import reddit.filtering
 import os
 import whoosh.index
 import sentiment.sentiment_analysis
 import sentiment.schema
-import numpy as np
 import reddit.parsing
-#from sentiment import sentiment_analysis
+import reddit.filtering
 
 index_dir = "indexdir"
 if not os.path.exists(index_dir):
@@ -30,23 +27,16 @@ ep_bot = red.redditor("AutoLovepon")
 url = "https://www.reddit.com/r/anime/comments/17a55ep/helck_episode_15_discussion/"
 submission = red.submission(url=url)
 titolo,episodio=reddit.parsing.parse_post_title(submission.title)
-"""
-filtrare pagine url tipo https//image
-filtrare gli a capo che vengono messi come /n
-filtrare caratteri speciali generati 
-gestione parole in grasetto
-
-titolo
-id
-
-"""
 
 for top_level_comment in submission.comments[1:]:
   if isinstance(top_level_comment, MoreComments):
     continue
-  if top_level_comment.body =='[removed]' or top_level_comment.body == '[deleted]':
+
+  if not reddit.filtering.filter_comment_body(top_level_comment.body):
     continue
-  content=reddit.filtering.markdown_to_plaintext(top_level_comment.body)
+
+  content = reddit.parsing.markdown_to_plaintext(top_level_comment.body)
+
   with index.writer() as writer:
     writer.add_document(
       content=content,
