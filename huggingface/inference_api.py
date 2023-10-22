@@ -40,7 +40,7 @@ def blocking_classify_text(text: Union[list, str], model: str):
       return classify_text(text, model, wait_for_model)
     except InferenceAPIError as e:
       # If the API throws a loading error, try again only once
-      if wait_for_model or e.status_code != 503 or not e.response_content.contains('loading'):
+      if wait_for_model or e.status_code != 503 or 'loading' not in e.response_content['error']:
         raise
       else:
         wait_for_model = True
