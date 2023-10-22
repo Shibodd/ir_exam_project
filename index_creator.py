@@ -9,7 +9,8 @@ import reddit.parsing
 import reddit.filtering
 from common_utils.chunk import chunk
 
-def store_single_submission(submission, index_writer = None, chunk_size=10):
+
+def store_single_submission(submission, index_writer = None, chunk_size=100000):
   title_parse_result = reddit.parsing.parse_post_title(submission.title)
   if title_parse_result is None:
     return
@@ -38,16 +39,18 @@ def store_single_submission(submission, index_writer = None, chunk_size=10):
 
   # Process the comments in chunks
   for comment_chunk in chunk(comments, chunk_size):
+    print(f"Processing comment chunk of size {len(comment_chunk)}.")
+    
     # Perform sentiment analysis on the whole chunk of comments in a single request
     sentiments = sentiment.sentiment_analysis.classify_text([comment['content'] for comment in comment_chunk])
     
     for comment, sentiment_vector in zip(comment_chunk, sentiments):
       comment['sentiment'] = sentiment_vector
-      if index_writer is None:
-        print(comment)
-      else:
+      print(comment)
+      if index_writer:
         index_writer.add_document(**comment)
-        print(comment['comment_id'])
+
+
 
 def index_creator(index_directory, simulate):
   red = praw.Reddit(
