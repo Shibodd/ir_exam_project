@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 class SentimentVector:
   SENTIMENTS = np.array([
@@ -51,7 +52,7 @@ class SentimentVector:
   
 
   def __repr__(self):
-    return f"{self.__class__.__name__}({self.vector})"
+    return f"{self.__class__.__name__}({np.array_repr(self.vector, max_line_width=math.inf, precision=3)})"
   
   def human_readable(self, thresh=0.2):
     def sentstr(i):

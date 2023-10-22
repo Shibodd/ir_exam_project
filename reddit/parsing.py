@@ -13,5 +13,4 @@ def parse_post_title(title: str):
     anime_episode = int(anime_episode)
     return (anime_title, anime_episode)
   except:
-    print("Bad post title:", title)
     return None

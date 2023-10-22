@@ -1,6 +1,9 @@
 import json
 import requests
 from typing import Union
+import logging
+
+logger = logging.getLogger(__name__)
 
 class InferenceAPIError(Exception):
   def __init__(self, status_code, response_content):
@@ -41,4 +44,4 @@ def blocking_classify_text(text: Union[list, str], model: str):
         raise
       else:
         wait_for_model = True
-        print("Inference model is loading...")
+        logger.warning("Inference model is loading...")
