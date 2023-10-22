@@ -1,5 +1,4 @@
-import json
-import requests
+import aiohttp
 from typing import Union
 import logging
 
@@ -14,30 +13,28 @@ class InferenceAPIError(Exception):
     return f"Huggingface replied with status code {self.status_code}: {self.response_content}"
 
 
-def classify_text(text: Union[list, str], model: str, wait_for_model=False, timeout=None):
+async def classify_text(text: Union[list, str], model: str, wait_for_model=False, timeout=None):
   API_URL = f"https://api-inference.huggingface.co/models/{model}"
   API_TOKEN = "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"
   
-  headers = {"Authorization": f"Bearer {API_TOKEN}"}
+  headers = { "Authorization": f"Bearer {API_TOKEN}" }
   data = { "inputs": text }
   if wait_for_model:
     data['options'] = { 'wait_for_model': True }
 
-  response = requests.request("POST", API_URL, headers=headers, data=json.dumps(data), timeout=timeout)
-
-  response_content = json.loads(response.content.decode("utf-8"))
-  if response.status_code != 200:
-    raise InferenceAPIError(response.status_code, response_content)
-  
-  return response_content
+  async with aiohttp.ClientSession() as session:
+    async with session.post(API_URL, headers=headers, json=data, timeout=timeout) as response:
+      if response.status != 200:
+        raise InferenceAPIError(response.status_code, await response.read())
+      return await response.json(encoding="utf-8")
 
 
-def blocking_classify_text(text: Union[list, str], model: str):
+async def blocking_classify_text(text: Union[list, str], model: str):
   wait_for_model = False
 
   while True:
     try:
-      return classify_text(text, model, wait_for_model)
+      return await classify_text(text, model, wait_for_model)
     except InferenceAPIError as e:
       # If the API throws a loading error, try again only once
       if wait_for_model or e.status_code != 503 or 'loading' not in e.response_content['error']:

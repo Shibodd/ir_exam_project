@@ -2,8 +2,8 @@ from sentiment import SentimentVector
 import huggingface
 from typing import Union
 
-def classify_text(text: Union[list, str]):
-  data = huggingface.inference_api.blocking_classify_text(text, "j-hartmann/emotion-english-distilroberta-base")
+async def classify_text(text: Union[list, str]):
+  data = await huggingface.inference_api.blocking_classify_text(text, "j-hartmann/emotion-english-distilroberta-base")
 
   def parse_classification(classification):
     ans = SentimentVector()
