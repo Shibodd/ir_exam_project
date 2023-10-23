@@ -38,7 +38,7 @@ async def blocking_classify_text(text: Union[list, str], model: str):
       return await classify_text(text, model, wait_for_model)
     except:
       logger.warning("Inference model exception")
-      asyncio.sleep(1)
+      await asyncio.sleep(1)
       pass
     #except InferenceAPIError as e:
     #  # If the API throws a loading error, try again only once
