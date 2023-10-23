@@ -50,7 +50,7 @@ class CommentProducer:
     logger.info("Processing submissions.")
     while len(submission_ids) > 0:
       submission_id = submission_ids.pop(random.randint(0, len(submission_ids) - 1))
-      logger.info(submission_id)
+      
       try:
         submission = await red.submission(submission_id)
       except asyncprawcore.exceptions.Forbidden:
