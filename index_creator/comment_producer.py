@@ -1,9 +1,12 @@
 import asyncpraw
+import asyncprawcore
 import reddit.parsing
 import logging
 import reddit.filtering
 import asyncio
 from . import IndexManager
+import reddit.submission_archive
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -40,9 +43,20 @@ class CommentProducer:
 
 
   async def __run(self, red: asyncpraw.Reddit):
-    ep_bot = await red.redditor("AutoLovepon")
+    submission_ids = []
+    logger.info("Downloading archive...")
+    for year in range(2019, 2024):
+      submission_ids.extend(await reddit.submission_archive.get_submissions_for_year(red, year))
+    logger.info("Processing submissions.")
+    while len(submission_ids) > 0:
+      submission_id = submission_ids.pop(random.randint(0, len(submission_ids) - 1))
+      logger.info(submission_id)
+      try:
+        submission = await red.submission(submission_id)
+      except asyncprawcore.exceptions.Forbidden:
+        logger.warn(f"Reddit responded with 403 Forbidden for post id {submission_id}.")
+        continue
 
-    async for submission in ep_bot.submissions.top('all', limit=None):
       title_parse_result = reddit.parsing.parse_post_title(submission.title)
 
       if title_parse_result is None:
