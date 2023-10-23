@@ -56,7 +56,6 @@ class CommentProducer:
       title, episode = title_parse_result
       await self.__run_on_submission(submission, title, episode)
 
-
   async def run(self):
     logger.info("Running.")
     try:
@@ -69,4 +68,5 @@ class CommentProducer:
       ) as red:
         await self.__run(red)
     except asyncio.CancelledError:
-      logger.info("Exiting.")
+      pass
+    logger.info("Exiting.")

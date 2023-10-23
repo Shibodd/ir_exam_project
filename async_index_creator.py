@@ -24,6 +24,7 @@ else:
   index = whoosh.index.open_dir(index_directory)
 
 
+
 async def main():
   queue = asyncio.Queue(400)
 
@@ -33,7 +34,9 @@ async def main():
 
     while True:
       try:
-        await asyncio.gather(task1, task2)
+        await asyncio.gather(task1)
+        task2.cancel()
+        await asyncio.gather(task2) 
         return
       except asyncio.CancelledError:
         pass
