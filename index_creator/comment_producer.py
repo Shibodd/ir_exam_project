@@ -53,8 +53,8 @@ class CommentProducer:
       
       try:
         submission = await red.submission(submission_id)
-      except asyncprawcore.exceptions.Forbidden:
-        logger.warn(f"Reddit responded with 403 Forbidden for post id {submission_id}.")
+      except Exception as e:
+        logger.exception(e)
         continue
 
       title_parse_result = reddit.parsing.parse_post_title(submission.title)
@@ -68,7 +68,12 @@ class CommentProducer:
         continue
 
       title, episode = title_parse_result
-      await self.__run_on_submission(submission, title, episode)
+      try:
+        await self.__run_on_submission(submission, title, episode)
+      except Exception as e:
+        logger.exception(e)
+        continue
+
 
   async def run(self):
     logger.info("Running.")

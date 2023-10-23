@@ -60,4 +60,7 @@ async def main():
 
 
 if __name__ == '__main__':
-  exit(asyncio.run(main()))
+  try:
+    exit(asyncio.run(main()))
+  except KeyboardInterrupt:
+    exit(0)

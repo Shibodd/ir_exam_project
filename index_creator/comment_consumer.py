@@ -14,16 +14,20 @@ class CommentConsumer:
 
 
   async def process_comment_chunk(self, comment_chunk):
-    logger.info("Processing chunk of %d comments.", len(comment_chunk))
+    logger.info("Calling Inference API with %d comments...", len(comment_chunk))
     
     # Perform sentiment analysis on the whole chunk of comments in a single request
     sentiments = await sentiment.sentiment_analysis.classify_text([comment['content'] for comment in comment_chunk])
 
+    logger.info("Writing %d comments to the index...", len(comment_chunk))
+    
     writer = self.index_manager.get_writer()
     for comment, sentiment_vector in zip(comment_chunk, sentiments):
       comment['sentiment'] = sentiment_vector
       writer.add_document(**comment)
       logger.debug(comment)
+      
+    logger.info("Done writing %d comments.", len(comment_chunk))
     
 
 
