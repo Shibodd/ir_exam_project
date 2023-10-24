@@ -1,9 +1,10 @@
 from .benchmark_spec import BenchmarkQuerySpec
 from . import dcg
 from app.searching import SearchEngine
-import numpy as np
-
 import whoosh.index
+import logging
+
+logger = logging.getLogger(__name__)
 
 def benchmark(engine: SearchEngine, benchmark_spec: list[BenchmarkQuerySpec]):
   print("Benchmarking...")
