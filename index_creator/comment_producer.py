@@ -43,36 +43,34 @@ class CommentProducer:
 
 
   async def __run(self, red: asyncpraw.Reddit):
-    submission_ids = []
-    logger.info("Downloading archive...")
-    for year in range(2019, 2024):
-      submission_ids.extend(await reddit.submission_archive.get_submissions_for_year(red, year))
-    logger.info("Processing submissions.")
-    while len(submission_ids) > 0:
-      submission_id = submission_ids.pop(random.randint(0, len(submission_ids) - 1))
-      
-      try:
-        submission = await red.submission(submission_id)
-      except Exception as e:
-        logger.exception(e)
-        continue
+    for year in range(2020, 2016, -1):
+      logger.info("Downloading archive for year %d.", year)
+      submission_ids = await reddit.submission_archive.get_submissions_for_year(red, year)
 
-      title_parse_result = reddit.parsing.parse_post_title(submission.title)
+      logger.info("Processing submissions.")
+      for submission_id in submission_ids:
+        try:
+          submission = await red.submission(submission_id)
+        except Exception as e:
+          logger.exception(e)
+          continue
 
-      if title_parse_result is None:
-        logger.warning("Skipping submission '%s' due to bad title.", submission.title)
-        continue
+        title_parse_result = reddit.parsing.parse_post_title(submission.title)
 
-      if self.index_manager.get_searcher().document_number(submission_id=submission.id):
-        logger.warning("Skipping submission '%s' because at least one of its comments is already in the index.", submission.title)
-        continue
+        if title_parse_result is None:
+          logger.warning("Skipping submission '%s' due to bad title.", submission.title)
+          continue
 
-      title, episode = title_parse_result
-      try:
-        await self.__run_on_submission(submission, title, episode)
-      except Exception as e:
-        logger.exception(e)
-        continue
+        if self.index_manager.get_searcher().document_number(submission_id=submission.id):
+          logger.warning("Skipping submission '%s' because at least one of its comments is already in the index.", submission.title)
+          continue
+
+        title, episode = title_parse_result
+        try:
+          await self.__run_on_submission(submission, title, episode)
+        except Exception as e:
+          logger.exception(e)
+          continue
 
 
   async def run(self):
