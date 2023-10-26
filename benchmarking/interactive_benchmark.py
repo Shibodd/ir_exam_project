@@ -61,7 +61,7 @@ def run(index_dir, benchmark_dir):
     idcg_lb_by_query.append(query_idcg_lb)
 
   # Compute the average DCG and IDCG lower bound over all the queries of this benchmark
-  average_dcg = common_utils.arrays.average(dcg_by_query)
-  average_idcg_lb = common_utils.arrays.average(idcg_lb_by_query)
+  average_dcg = common_utils.arrays.average(*dcg_by_query)
+  average_idcg_lb = common_utils.arrays.average(*idcg_lb_by_query)
   
   return benchmarking.results.BenchmarkResults(dcg_by_query, idcg_lb_by_query, average_dcg, average_idcg_lb)
