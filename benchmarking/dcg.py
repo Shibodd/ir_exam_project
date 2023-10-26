@@ -1,4 +1,3 @@
-from .benchmark_spec import BenchmarkQuerySpec
 import numpy as np
 import whoosh.index
 from common_utils.arrays import largest_k
