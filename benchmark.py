@@ -6,10 +6,14 @@ def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('index_dir')
   parser.add_argument('benchmark_dir')
+  parser.add_argument('-g', '--graphic', help='Visualizes plots as well as text.')
   args = parser.parse_args()
 
   results = benchmarking.interactive.run(args.index_dir, args.benchmark_dir)
+
   benchmarking.visualization.visualize_results_text(results)
+  if args.graphic:
+    benchmarking.visualization.visualize_results_plots(results)
 
   return 0
 
