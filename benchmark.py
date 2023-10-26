@@ -1,4 +1,5 @@
-import benchmarking.interactive_benchmark
+import benchmarking.interactive
+import benchmarking.visualization
 
 import argparse
 def main():
@@ -7,7 +8,8 @@ def main():
   parser.add_argument('benchmark_dir')
   args = parser.parse_args()
 
-  benchmarking.interactive_benchmark.run(args.index_dir, args.benchmark_dir)
+  results = benchmarking.interactive.run(args.index_dir, args.benchmark_dir)
+  benchmarking.visualization.visualize_results_text(results)
 
   return 0
 
