@@ -8,10 +8,10 @@ class SearchEngine:
   def set_index(self, index):
     self.index = index
 
-  def search(self, main_query, sentiment_query = None):
+  def search(self, main_query, sentiment_query=None, limit=None):
     query, sentiment_vector = parse_query(self.index.schema, main_query, sentiment_query)
 
     with self.index.searcher(weighting=self.weighting_model) as searcher:
       self.weighting_model.set_query_sentiment_vector(sentiment_vector)
-      for result in searcher.search(query):
+      for result in searcher.search(query, limit=limit):
         yield result
