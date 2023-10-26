@@ -5,7 +5,6 @@ from common_utils.arrays import largest_k
 
 def compute_DCG(result_relevances) -> np.ndarray:
   """ Computes the Discounted Cumulative Gain for the results. """
-
   cumulative = np.cumsum(result_relevances)
   discounts = np.log2(np.arange(start=2, stop=len(result_relevances) + 2, dtype=int)) 
   return cumulative / discounts
@@ -13,14 +12,14 @@ def compute_DCG(result_relevances) -> np.ndarray:
 
 
 from typing import Iterable
-def compute_ideal_DCG(all_scores: Iterable[int], dimension) -> np.array:
+def compute_ideal_DCG(all_scores: Iterable[int], dimension=None) -> np.array:
   """
   The ideal DCG is the DCG of the ideal ranking,
   in which documents are sorted by descending relevance score.
   
-  dimension: Limits the ideal DCG to this size.
+  dimension: Limits the ideal DCG to this size. If none, uses all scores.
   """
-  all_relevances = np.fromiter(all_scores)
+  all_relevances = np.fromiter(all_scores, dtype=int)
 
   if dimension is None or dimension == all_relevances.shape[0]:
     scores = np.sort(all_relevances)
