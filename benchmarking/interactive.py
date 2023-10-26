@@ -12,9 +12,21 @@ def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQuer
   """
 
   # Score vector in order of ranking (leftmost is the top result)
-  scores = [2, 1, 2, 0, 0, 2, 0]
+  scores = []
   
   for result in searcher.search(bqm.main_query, bqm.sentiment_query):
+    score_app=bqm.get_score(result['comment_id'])
+    if score_app==0 or score_app==1 or score_app==2:
+      scores.append(score_app)
+    else:
+      print("inserire un punteggio da 0 a 2 (non rilevante, poco rilevante, rilevante)")
+      new_s=int("enter a number")
+      bqm.update_score(score_app,)
+      condition=isinstance(score_app, new_s)
+      if score_app<0 and score_app>2 or condition==False:
+        bqm.update_score(score_app, new_s)
+      else:
+        scores.append(score_app)
     """
     TODO:
     Se il commento ha gia' un punteggio, usare quello senza mostrare output;

@@ -1,4 +1,5 @@
 from .results import BenchmarkResults
+import matplotlib as dtb
 
 def visualize_results_text(results: BenchmarkResults):
   """ TODO: Visualizzazione decente testuale """
@@ -9,4 +10,6 @@ def visualize_results_text(results: BenchmarkResults):
 
 def visualize_results_plots(results: BenchmarkResults):
   """ TODO: Visualizzazione figa con grafici """
+  dtb.plot(range(10), '--bo', label='marker for result')
+  dtb.legend()
   raise NotImplementedError("Te piacesse")
