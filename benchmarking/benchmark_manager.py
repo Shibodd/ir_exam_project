@@ -25,8 +25,8 @@ class BenchmarkQueryManager:
       with self.__path.open('rt', encoding='utf-8') as f:
         data = json.load(f)
         
-      self.main_query = data['main_query'],
-      self.sentiment_query = data['sentiment_query'],
+      self.main_query = data['main_query']
+      self.sentiment_query = data['sentiment_query']
       self.__relevances = data.get('relevances', {})
     else:
       self.main_query = ''
@@ -49,7 +49,7 @@ class BenchmarkQueryManager:
         'main_query': self.main_query,
         'sentiment_query': self.sentiment_query,
         'relevances': self.__relevances
-      }, f)
+      }, f, indent=2)
 
   @property
   def path(self):
