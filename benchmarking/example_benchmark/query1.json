@@ -1,5 +1,5 @@
 {
-  "main_query": "doomed",
-  "sentiment_query": "fear",
-  "index_dir": "query1_index"
+  "main_query": "love",
+  "sentiment_query": "joy",
+  "relevances": {}
 }
