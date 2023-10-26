@@ -3,20 +3,6 @@ import pathlib
 import shutil
 import typing
 
-""" 
-// Example query
-{
-  "main_query": "Gesu' cristo",
-  "sentiment_query": "disgust AND anger",
-  "relevances": {
-    "iw12da": 3,
-    "ab244f": 1,
-    "c1364e": 0,
-    "flh054": 3,
-  }
-}
-"""
-
 class BenchmarkQueryManager:
   def __init__(self, path, main_query=None, sentiment_query=None):
     self.main_query = main_query
@@ -41,7 +27,7 @@ class BenchmarkQueryManager:
         
       self.main_query = data['main_query'],
       self.sentiment_query = data['sentiment_query'],
-      self.__relevances = data['relevances']
+      self.__relevances = data.get('relevances', {})
     else:
       self.main_query = ''
       self.sentiment_query = ''
@@ -69,7 +55,7 @@ class BenchmarkQueryManager:
   def path(self):
     return self.__path
   
-  @property.setter
+  @path.setter
   def path(self, value):
     self.__path = pathlib.Path(value)
 
