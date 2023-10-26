@@ -13,21 +13,24 @@ def compute_DCG(result_relevances) -> np.ndarray:
 
 
 
-
-def compute_ideal_DCG(index: whoosh.index.Index, dimension: int) -> np.array:
+from typing import Iterable
+def compute_ideal_DCG(all_scores: Iterable[int], dimension) -> np.array:
   """
   The ideal DCG is the DCG of the ideal ranking,
   in which documents are sorted by descending relevance score.
   
   dimension: Limits the ideal DCG to this size.
   """
-  reader = index.reader()
-  all_relevances = np.fromiter(reader.field_terms('relevance'), dtype=int)
+  all_relevances = np.fromiter(all_scores)
 
-  if dimension > all_relevances.shape[0]:
-    raise ValueError("Requested ideal DCG dimension is larger than the amount of documents in the index.")
+  if dimension is None or dimension == all_relevances.shape[0]:
+    scores = np.sort(all_relevances)
+  else:
+    if dimension > all_relevances.shape[0]:
+      raise ValueError("Requested ideal DCG dimension is larger than the amount of documents in the index.")
+    scores = largest_k(all_relevances, dimension)
   
-  return compute_DCG(largest_k(all_relevances, dimension))
+  return compute_DCG(scores)
 
 
 def compute_NDCG(index: whoosh.index.Index, result_relevances) -> np.ndarray:
