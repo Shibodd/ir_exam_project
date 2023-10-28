@@ -4,6 +4,7 @@ import benchmarking.results
 import common_utils.arrays
 import pathlib
 import whoosh.index
+import common_utils.controllo_interi
 
 def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQueryManager, limit=50):
   """
@@ -19,14 +20,9 @@ def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQuer
     if score_app==0 or score_app==1 or score_app==2:
       scores.append(score_app)
     else:
-      print("inserire un punteggio da 0 a 2 (non rilevante, poco rilevante, rilevante)")
-      new_s=int("enter a number")
-      bqm.update_score(score_app,)
-      condition=isinstance(score_app, new_s)
-      if score_app<0 and score_app>2 or condition==False:
-        bqm.update_score(score_app, new_s)
-      else:
-        scores.append(score_app)
+      score_app=common_utils.controllo_interi.verifica()
+      bqm.update_score(result['comment_id'],score_app)
+      scores.append(score_app)
     """
     TODO:
     Se il commento ha gia' un punteggio, usare quello senza mostrare output;
