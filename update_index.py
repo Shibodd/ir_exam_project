@@ -14,7 +14,8 @@ class Version:
 
 VERSIONS = [
   Version('v1', sentiment.schema.SCHEMA_V1, None),
-  Version('v2', sentiment.schema.SCHEMA_V2, sentiment.schema.schema_v1_to_schema_v2),
+  Version('v2', sentiment.schema.SCHEMA_V2, sentiment.schema.schema_update_just_copy),
+  Version('v3', sentiment.schema.SCHEMA_V3, sentiment.schema.schema_update_just_copy),
 ]
 
 class UnknownVersionException(Exception):

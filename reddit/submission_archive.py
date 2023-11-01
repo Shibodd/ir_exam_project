@@ -5,14 +5,15 @@ import bs4
 import itertools
 import asyncstdlib
 
-URL_ID_REGEX = re.compile(r'(r\/\w+?\/comments\/)?([\d\w]{6})')
+URL_ID_REGEX = re.compile(r'(r\/\w+?\/comments\/)?([\d\w]+)/?')
 
 def parse_submission_id_from_url(url: str):
   # Parse the submission id from links... Seems to work. Maybe.
   url = urllib.parse.urlparse(url.strip('/')).path.strip('/')
   m = URL_ID_REGEX.match(url)
   assert m
-  return m.groups()[1]
+  ans = m.groups()[1]
+  return ans
 
 async def get_submissions_for_years(red: asyncpraw.Reddit, years):
   async def get_submissions_for_year(red: asyncpraw.Reddit, year):
@@ -27,6 +28,3 @@ async def get_submissions_for_years(red: asyncpraw.Reddit, years):
     return [parse_submission_id_from_url(url) for url in urls]
 
   return await asyncstdlib.list(asyncstdlib.itertools.chain.from_iterable(await get_submissions_for_year(red, year) for year in years))
-
-
-  

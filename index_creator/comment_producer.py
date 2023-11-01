@@ -16,11 +16,16 @@ class CommentProducer:
     self.index_manager = index_manager
     self.comment_queue = comment_queue
 
-  async def __run_on_submission(self, submission: asyncpraw.reddit.models.Submission, title: str, episode: int):
+  async def __run_on_submission(self, submission: asyncpraw.reddit.models.Submission, title: str, episode: int, replace_more=False):
     logger.info("Processing submission: '%s' - Episode %d.", title, episode)
     await submission.load()
 
-    comments = submission.comments
+    if replace_more:
+      logger.info("Replacing more (current length %d)... This will take some time.", len(submission.comments))
+      await submission.comments.replace_more(limit=None)
+      logger.info("Done replacing more. New length %d", len(submission.comments))
+
+    comments = submission.comments.list()
     comments = filter(lambda comment: not isinstance(comment, asyncpraw.reddit.models.MoreComments), comments)
     comments = ({
         'content': reddit.parsing.markdown_to_plaintext(comment.body),
@@ -42,9 +47,13 @@ class CommentProducer:
       await self.comment_queue.put(comment)
 
 
-  async def __run(self, red: asyncpraw.Reddit, submission_ids: list[str]):
+  async def __run(self, red: asyncpraw.Reddit, submission_ids: list[str], replace_more=False):
     logger.info("Processing submissions.")
     for submission_id in submission_ids:
+      if not replace_more and self.index_manager.get_searcher().document_number(submission_id=submission_id):
+        logger.warning("Skipping submission '%s' because at least one of its comments is already in the index.", submission_id)
+        continue
+
       try:
         submission = await red.submission(submission_id)
       except Exception as e:
@@ -57,22 +66,18 @@ class CommentProducer:
         logger.warning("Skipping submission '%s' due to bad title.", submission.title)
         continue
 
-      if self.index_manager.get_searcher().document_number(submission_id=submission.id):
-        logger.warning("Skipping submission '%s' because at least one of its comments is already in the index.", submission.title)
-        continue
-
       title, episode = title_parse_result
       try:
-        await self.__run_on_submission(submission, title, episode)
+        await self.__run_on_submission(submission, title, episode, replace_more)
       except Exception as e:
         logger.exception(e)
         continue
 
 
-  async def run(self, red: asyncpraw.Reddit, submission_ids: list[str]):
+  async def run(self, red: asyncpraw.Reddit, submission_ids: list[str], replace_more=False):
     logger.info("Running.")
     try:
-      await self.__run(red, submission_ids)
+      await self.__run(red, submission_ids, replace_more)
     except asyncio.CancelledError:
       pass
     logger.info("Exiting.")
