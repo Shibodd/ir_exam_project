@@ -25,7 +25,7 @@ class CommentProducer:
       await submission.comments.replace_more(limit=None)
       logger.info("Done replacing more. New length %d", len(submission.comments))
 
-    comments = submission.comments
+    comments = submission.comments.list()
     comments = filter(lambda comment: not isinstance(comment, asyncpraw.reddit.models.MoreComments), comments)
     comments = ({
         'content': reddit.parsing.markdown_to_plaintext(comment.body),
@@ -50,6 +50,10 @@ class CommentProducer:
   async def __run(self, red: asyncpraw.Reddit, submission_ids: list[str], replace_more=False):
     logger.info("Processing submissions.")
     for submission_id in submission_ids:
+      if not replace_more and self.index_manager.get_searcher().document_number(submission_id=submission_id):
+        logger.warning("Skipping submission '%s' because at least one of its comments is already in the index.", submission_id)
+        continue
+
       try:
         submission = await red.submission(submission_id)
       except Exception as e:
@@ -60,10 +64,6 @@ class CommentProducer:
 
       if title_parse_result is None:
         logger.warning("Skipping submission '%s' due to bad title.", submission.title)
-        continue
-
-      if not replace_more and self.index_manager.get_searcher().document_number(submission_id=submission.id):
-        logger.warning("Skipping submission '%s' because at least one of its comments is already in the index.", submission.title)
         continue
 
       title, episode = title_parse_result

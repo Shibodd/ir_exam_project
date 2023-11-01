@@ -1,5 +1,5 @@
 def is_not_too_long(content):
-  return len(content) < 100
+  return len(content) < 400
 
 def is_deleted(content):
   return content == '[removed]' or content == '[deleted]'

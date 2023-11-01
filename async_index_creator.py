@@ -21,7 +21,7 @@ async def run_index_creator(index_directory):
     ) as red:
 
     logger.info("Downloading archive...")
-    submission_ids = await reddit.submission_archive.get_submissions_for_years(red, [2022, 2021, 2020, 2019, 2018, 2017, 2016])
+    submission_ids = await reddit.submission_archive.get_submissions_for_years(red, range(2023, 2015, -1))
     await index_creator.run.run(red, index_directory, submission_ids)
 
 if __name__ == '__main__':
