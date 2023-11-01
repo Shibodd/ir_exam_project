@@ -5,7 +5,7 @@ import asyncpraw
 
 logger = logging.getLogger(__name__)
 
-async def add_submission_to_index(index_directory, submission_id):
+async def add_submission_to_index(index_directory, submission_id, all_comments=False):
   logger.info("Connecting to Reddit...")
   async with asyncpraw.Reddit(
       client_id="fyFBUMdaXtoogBzfHs-FQg",
@@ -16,13 +16,14 @@ async def add_submission_to_index(index_directory, submission_id):
     ) as red:
 
     submission_ids = [submission_id]
-    await index_creator.run.run(red, index_directory, submission_ids)
+    await index_creator.run.run(red, index_directory, submission_ids, all_comments=all_comments)
 
 if __name__ == '__main__':
   import argparse
   parser = argparse.ArgumentParser()
   parser.add_argument('index_directory')
   parser.add_argument('submission_id')
+  parser.add_argument('--all_comments', action='store_true')
   args = parser.parse_args()
 
   logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', filename='add_submission.log', encoding='utf-8', level=logging.WARNING)
@@ -40,6 +41,6 @@ if __name__ == '__main__':
   logging.getLogger('').setLevel(logging.DEBUG)
 
   try:
-    exit(asyncio.run(add_submission_to_index(args.index_directory, args.submission_id)))
+    exit(asyncio.run(add_submission_to_index(args.index_directory, args.submission_id, args.all_comments)))
   except KeyboardInterrupt:
     exit(0)
