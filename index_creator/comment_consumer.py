@@ -30,20 +30,28 @@ class CommentConsumer:
     logger.info("Done writing %d comments.", len(comment_chunk))
     
 
-
   async def run(self):
     logger.info("Running.")
+    
+    processing = False
+    chunk = []
 
     try:
       while True:
         # Read from the queue until we have enough comments
-        chunk = []
+        chunk.clear()
         while len(chunk) < self.chunk_size:
           chunk.append(await self.queue.get())
         
         # Process the chunk of comments
+        processing = True # Avoid duplicates - prefer losing data
         await self.process_comment_chunk(chunk)
+        processing = False
+
     except asyncio.CancelledError:
-      pass
+      # If we're being cancelled, first process the pending data.
+      # If we were processing the data when CancelledError was raised, lose the data instead of writing duplicates.
+      if len(chunk) > 0 and not processing:
+        await self.process_comment_chunk(chunk)
 
     logger.info("Exiting.")

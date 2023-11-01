@@ -1,16 +1,11 @@
-import argparse
-import index_creator.run
 import asyncio
-import logging
-
+import index_creator.run
 import logging
 import asyncpraw
 
-import reddit
-
 logger = logging.getLogger(__name__)
 
-async def run_index_creator(index_directory):
+async def add_submission_to_index(index_directory, submission_id):
   logger.info("Connecting to Reddit...")
   async with asyncpraw.Reddit(
       client_id="fyFBUMdaXtoogBzfHs-FQg",
@@ -20,16 +15,17 @@ async def run_index_creator(index_directory):
       username="Extension_Pudding570",
     ) as red:
 
-    logger.info("Downloading archive...")
-    submission_ids = await reddit.submission_archive.get_submissions_for_years(red, [2022, 2021, 2020, 2019, 2018, 2017, 2016])
+    submission_ids = [submission_id]
     await index_creator.run.run(red, index_directory, submission_ids)
 
 if __name__ == '__main__':
+  import argparse
   parser = argparse.ArgumentParser()
-  parser.add_argument("index_directory", help="The directory in which the index will be created / updated.")
+  parser.add_argument('index_directory')
+  parser.add_argument('submission_id')
   args = parser.parse_args()
 
-  logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', filename='index_creator.log', encoding='utf-8', level=logging.WARNING)
+  logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', filename='add_submission.log', encoding='utf-8', level=logging.WARNING)
 
   console = logging.StreamHandler()
   console.setLevel(logging.INFO)
@@ -44,6 +40,6 @@ if __name__ == '__main__':
   logging.getLogger('').setLevel(logging.DEBUG)
 
   try:
-    exit(asyncio.run(run_index_creator(args.index_directory)))
+    exit(asyncio.run(add_submission_to_index(args.index_directory, args.submission_id)))
   except KeyboardInterrupt:
     exit(0)
