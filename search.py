@@ -46,10 +46,13 @@ class SearchViewer:
   def run(self):
     if not self.output_result():
       print("No results!")
+      return
+    
     try:
       h = pynput.keyboard.GlobalHotKeys({
         'd': lambda: self.next_result(),
-        'a': lambda: self.prev_result()
+        'a': lambda: self.prev_result(),
+        '<ctrl>+c': lambda: h.stop(),
       })
       with h:
         h.join()
@@ -62,7 +65,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('index_directory')
   parser.add_argument('main_query')
-  parser.add_argument('sentiment_query')
+  parser.add_argument('sentiment_query', nargs='?', default=None)
 
   args = parser.parse_args()
 
