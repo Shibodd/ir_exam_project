@@ -32,6 +32,8 @@ SCHEMA_V2 = fields.Schema(
   submission_id=fields.ID(stored=True, unique=True)
 )
 
+SCHEMA = SCHEMA_V2
+
 def schema_v1_to_schema_v2(index_v1: reading.IndexReader, index_v2: writing.IndexWriter):
   # Just need to run the analyzer - copy everything
   for _, stored in index_v1.iter_docs():

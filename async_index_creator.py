@@ -6,8 +6,9 @@ import logging
 import os
 import sentiment.schema
 import whoosh.index
-
+import asyncpraw
 import argparse
+import reddit
 
 logger = logging.getLogger(__name__)
 
@@ -20,21 +21,33 @@ async def run_index_creator(index_directory):
     logger.info("Opening pre-existing index...")
     index = whoosh.index.open_dir(index_directory)
 
-  queue = asyncio.Queue(400)
+  logger.info("Connecting to Reddit...")
+  async with asyncpraw.Reddit(
+      client_id="fyFBUMdaXtoogBzfHs-FQg",
+      client_secret="1Wkzf7IRXGgHnd_HScgPpFJUwc6IZg",
+      password="thequickbrownfoxjumpsoverthelazydog",
+      user_agent="unimore-ir-sentiment-analysis",
+      username="Extension_Pudding570",
+    ) as red:
 
-  with index_creator.IndexManager(index) as index_manager:
-    task1 = asyncio.create_task(index_creator.CommentProducer(index_manager, queue).run())
-    task2 = asyncio.create_task(index_creator.CommentConsumer(index_manager, queue, 200).run())
-    
-    # The tasks handle cancellation gracefully
-    while True:
-      try:
-        await asyncio.gather(task1)
-        task2.cancel()
-        await asyncio.gather(task2) 
-        return
-      except asyncio.CancelledError:
-        pass
+    logger.info("Downloading archive...")
+    submission_ids = await reddit.submission_archive.get_submissions_for_years(red, [2022, 2021, 2020, 2019, 2018, 2017, 2016])
+
+    logger.info("Starting")
+    queue = asyncio.Queue(400)
+    with index_creator.IndexManager(index) as index_manager:
+      task1 = asyncio.create_task(index_creator.CommentProducer(index_manager, queue).run(red, submission_ids))
+      task2 = asyncio.create_task(index_creator.CommentConsumer(index_manager, queue, 200).run())
+      
+      # The tasks handle cancellation gracefully
+      while True:
+        try:
+          await asyncio.gather(task1)
+          task2.cancel()
+          await asyncio.gather(task2) 
+          return
+        except asyncio.CancelledError:
+          pass
 
 
 async def main():
@@ -53,6 +66,7 @@ async def main():
   logger.setLevel(logging.DEBUG)
   logging.getLogger('huggingface').setLevel(logging.DEBUG)
   logging.getLogger('index_creator').setLevel(logging.DEBUG)
+  logging.getLogger('async_index_creator').setLevel(logging.DEBUG)
   logging.getLogger('').setLevel(logging.DEBUG)
 
   await run_index_creator(args.index_directory)
