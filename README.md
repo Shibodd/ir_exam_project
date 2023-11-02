@@ -24,7 +24,7 @@ To update an old index version: `python3 update_indexpy indexdir <from_version> 
 
 # Benchmarks
 
-### Sentiment might mildly help recall in very specific queries. Query terms are ORed by default. Sentiment query is optional.
+### Sentiment might mildly help recall in very specific queries, but it is used only for ranking. Query terms are ORed by default. Sentiment query is optional.
 **UIN 1**: "I remember a show in which the protagonist punched her schoolmate in the face, after turning around to check if the teacher was looking. What is the show called?" <br/>
 **Content**: punch face check teacher <br/>
 **Sentiment**: <ins>EMPTY</ins>
@@ -70,7 +70,20 @@ This results in the user being mislead by the wrong show title.
 **Content**: the flying acidic TurTle with LASER cannon
 **Sentiment**: fear
 
-Comments which talk about the correct flying turtle and mention something that induces fear are ranked 2.
+Comments which talk about the correct flying turtle and mention something about it that makes it fearsome are ranked 2.
 Comments which just talk about the correct flying turtle are ranked 1.
 
 Note that we intentionally insert stopwords, add stems to terms and randomly use uppercase letters in the query. All of this is fixed by the preprocessing step.
+
+
+### Proximity searches to improve precision.
+**UIN 6**: "I remember a show about this girl skipping the qualifiers of a very important championship to go on a class trip. What show was that?"
+**Content**: skip AND qualifier
+**Sentiment**: EMPTY
+
+Compare the above with 
+
+**Content**: "skip qualifier"~4
+**Sentiment**: EMPTY
+
+Note that because the UIN is the same, the comment scores are also the same.
