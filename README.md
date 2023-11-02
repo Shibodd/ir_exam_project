@@ -29,7 +29,7 @@ Mild hate is scored 1.
 **Sentiment**: anger disgust
 
 
-### Comments are assumed to be independent and the submission is not used as context.
+### Comments are assumed to be independent and their tree structure is not used for context.
 Comments from which the user can infer the correct show title are scored 2.
 Comments which hint at the opening are scored 1.
 Misleading comments are scored 0, together with unrelevant ones.
