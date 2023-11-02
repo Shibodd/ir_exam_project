@@ -7,10 +7,11 @@ def main():
   parser.add_argument('index_dir')
   parser.add_argument('benchmark_dir')
   parser.add_argument('-g', '--graphic', action='store_true', help='Visualizes plots as well as text.')
+  parser.add_argument('-i', '--interactive', action='store_true', help='Benchmark edit mode.')
   args = parser.parse_args()
 
   try:
-    results = benchmarking.interactive.run(args.index_dir, args.benchmark_dir)
+    results = benchmarking.interactive.run(args.index_dir, args.benchmark_dir, args.interactive)
 
     benchmarking.visualization.visualize_results_text(results)
     if args.graphic:

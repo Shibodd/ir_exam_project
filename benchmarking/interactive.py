@@ -7,7 +7,7 @@ import pathlib
 import whoosh.index
 import common_utils.controllo_interi
 
-def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQueryManager, limit=30):
+def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQueryManager, interactive=True, limit=30):
   """
   Returns the score for each comment in the query results.
   If the comment was not previously scored, prompts the user to score the result.
@@ -20,9 +20,8 @@ def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQuer
       score_app = bqm.get_score(result['comment_id'])
       if score_app is not None:
         scores.append(score_app)
-      else:
+      elif interactive:
         print("\n" * 10)
-        
         print(f"Query: {app.query_to_string.query_to_string(bqm.main_query, bqm.sentiment_query)}")
         print(f"Sentiment: {result['sentiment'].human_readable(0.1)}")
         print(f"Show: {result['title']} - Episode {result['episode']}")
@@ -33,13 +32,16 @@ def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQuer
         print("\n"*10)
         bqm.update_score(result['comment_id'], score_app)     
         scores.append(score_app)
+      else:
+        scores.append(0)
+        
   except KeyboardInterrupt:
     pass
 
     #non scrivere mentre guidi non rischiare!! 
   return scores
 
-def run(index_dir, benchmark_dir):
+def run(index_dir, benchmark_dir, interactive=True):
   index_dir = pathlib.Path(index_dir)
   benchmark_dir = pathlib.Path(benchmark_dir)
 
@@ -54,7 +56,7 @@ def run(index_dir, benchmark_dir):
   for query_file in benchmark_dir.glob('*.json'):
     with benchmarking.BenchmarkQueryManager(query_file) as bqm:
       # The relevance score of each result
-      scores = run_single_query(searcher, bqm)
+      scores = run_single_query(searcher, bqm, interactive)
       
 
       # Lower bound for the Ideal DCG for this query
