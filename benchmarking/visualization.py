@@ -16,5 +16,3 @@ def visualize_results_plots(results: BenchmarkResults):
     creation_graph.creazione_grafico(result.dcg,result.idcg_lb)
   print()
   creation_graph.creazione_grafico(results.average_dcg,results.average_idcg_lb)
-
-raise NotImplementedError("Te piacesse")
