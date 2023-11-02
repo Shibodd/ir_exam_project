@@ -17,6 +17,7 @@ def creazione_grafico(dcg,idcg,query):
     plt.setp((plt.plot(colonna_x, dcg, 'bo', col_line_x, dcg_line, 'k')),'color','g')
     plt.setp((plt.plot(colonna_x2, idcg, 'bo', col_line_x2, idcg_line, 'k')),'color','r')
 
+    plt.grid(True)
     plt.title('Evaluation Comments'+query+" ")
     plt.xlabel('Comment Numbers')
     plt.ylabel('Comments Rating')
