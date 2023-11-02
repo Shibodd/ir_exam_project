@@ -53,8 +53,8 @@ Mild hate is scored 1.
 
 
 ### Comments are assumed to be independent and their tree structure is not used for context.
-**UIN 4**: "I remember a show of which opening was a cover of a hungarian song. What's the show called?"
-**Content**: hungarian song cover
+**UIN 4**: "I remember a show of which opening was a cover of a hungarian song. What's the show called?" <br/>
+**Content**: hungarian song cover <br/>
 **Sentiment**: EMPTY
 
 Comments from which the user can infer the correct show title are scored 2.
@@ -66,8 +66,8 @@ This results in the user being mislead by the wrong show title.
 
 
 ### Documents and queries are preprocessed by tokenizing (on whitespace), lowercasing, removing stopwords and finally stemming.
-**UIN 5**: "I heard about a show in which the protagonist owns a fearsome flying turtle pet which has a laser cannon and can drop acid. What's it called?"
-**Content**: the flying acidic TurTle with LASER cannon
+**UIN 5**: "I heard about a show in which the protagonist owns a fearsome flying turtle pet which has a laser cannon and can drop acid. What's it called?" <br/>
+**Content**: the flying acidic TurTle with LASER cannon <br/>
 **Sentiment**: fear
 
 Comments which talk about the correct flying turtle and mention something about it that makes it fearsome are ranked 2.
@@ -77,13 +77,13 @@ Note that we intentionally insert stopwords, add stems to terms and randomly use
 
 
 ### Proximity searches to improve precision.
-**UIN 6**: "I remember a show about this girl skipping the qualifiers of a very important championship to go on a class trip. What show was that?"
-**Content**: skip AND qualifier
+**UIN 6**: "I remember a show about this girl skipping the qualifiers of a very important championship to go on a class trip. What show was that?" <br/>
+**Content**: skip AND qualifier <br/>
 **Sentiment**: EMPTY
 
 Compare the above with 
 
-**Content**: "skip qualifier"~4
+**Content**: "skip qualifier"~4 <br/>
 **Sentiment**: EMPTY
 
 Note that because the UIN is the same, the comment scores are also the same.
