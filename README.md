@@ -37,8 +37,8 @@ Misleading comments are scored 0, together with unrelevant ones.
 In this query, a comment with the correct context (in the thread, they're talking about the correct show) is indipendently ranked second, without displaying any context.
 This results in the user being mislead by the wrong show title.
 
-***UIN 4***: "I remember a show of which opening was a cover of a hungarian song. What's the show called?"
-**Content**: hungarian song cover
-**Sentiment**: EMPTY
+***UIN 4***: "I remember a show of which opening was a cover of a hungarian song. What's the show called?" <br/>
+**Content**: hungarian song cover <br/>
+**Sentiment**: EMPTY <br/>
 
 
