@@ -14,23 +14,26 @@ def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQuer
 
   # Score vector in order of ranking (leftmost is the top result)
   scores = []
-  
-  for result in searcher.search(bqm.main_query, bqm.sentiment_query, limit=limit):
-    score_app = bqm.get_score(result['comment_id'])
-    if score_app is not None:
-      scores.append(score_app)
-    else:
-      print("\n" * 10)
-      
-      print(f"Sentiment: {result['sentiment'].human_readable(0.1)}")
-      print(f"Show: {result['title']} - Episode {result['episode']}")
-      print("-"*20)
-      print(result['content'])
-      print("-"*20)
-      score_app=common_utils.controllo_interi.verifica()
-      print("\n"*10)
-      bqm.update_score(result['comment_id'], score_app)     
-      scores.append(score_app)
+  try:
+    for result in searcher.search(bqm.main_query, bqm.sentiment_query, limit=limit):
+      score_app = bqm.get_score(result['comment_id'])
+      if score_app is not None:
+        scores.append(score_app)
+      else:
+        print("\n" * 10)
+        
+        print(f"Query: content:({bqm.main_query}), sentiment:({bqm.sentiment_query})")
+        print(f"Sentiment: {result['sentiment'].human_readable(0.1)}")
+        print(f"Show: {result['title']} - Episode {result['episode']}")
+        print("-"*20)
+        print(result['content'])
+        print("-"*20)
+        score_app=common_utils.controllo_interi.verifica()
+        print("\n"*10)
+        bqm.update_score(result['comment_id'], score_app)     
+        scores.append(score_app)
+  except KeyboardInterrupt:
+    pass
 
     #non scrivere mentre guidi non rischiare!! 
   return scores
@@ -51,6 +54,7 @@ def run(index_dir, benchmark_dir):
     with benchmarking.BenchmarkQueryManager(query_file) as bqm:
       # The relevance score of each result
       scores = run_single_query(searcher, bqm)
+      
 
       # Lower bound for the Ideal DCG for this query
       # (it's very likely that we didn't rate all relevant documents!)
