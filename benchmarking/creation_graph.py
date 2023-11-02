@@ -21,6 +21,6 @@ def creazione_grafico(dcg,idcg,query):
     plt.title(query)
     plt.xlabel('Rank')
     plt.ylabel('Gain')
-    plt.legend(['DCG','','IDCG',''])
+    plt.legend(['DCG','','Lower bound for IDCG',''])
     plt.show()
 
