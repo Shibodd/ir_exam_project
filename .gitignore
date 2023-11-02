@@ -162,4 +162,4 @@ cython_debug/
 
 .vscode
 indexdir/
-benchmarking/example_benchmark/*.bak
+the_benchmark/*.bak
