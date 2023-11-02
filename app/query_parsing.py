@@ -4,7 +4,7 @@ import sentiment
 def parse_query(schema, main_part, sentiment_part=None):
   # Main query should not contain sentiments as no results are returned otherwise
   # Use a plugin for the check, because operations are simpler
-  parser = qparser.QueryParser("content", schema)
+  parser = qparser.QueryParser("content", schema, group=qparser.OrGroup)
   parser.add_plugin(sentiment.query_parsing.NoSentimentPlugin())
   main_query = parser.parse(main_part)
 
