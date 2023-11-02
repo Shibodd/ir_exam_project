@@ -83,7 +83,7 @@ Note that we intentionally insert stopwords, add stems to terms and randomly use
 
 Compare the above with 
 
-**UIN 7**: The same as **UIN 6**
+**UIN 7**: The same as **UIN 6** <br/>
 **Content**: "skip qualifier"~4 <br/>
 **Sentiment**: EMPTY
 
