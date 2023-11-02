@@ -61,7 +61,7 @@ Comments from which the user can infer the correct show title are scored 2.
 Comments which hint at the opening are scored 1.
 Misleading comments are scored 0, together with unrelevant ones.
 
-In this query, a comment with the correct context (in the thread, they're talking about the correct show) is indipendently ranked second, without displaying any context.
+In this query, a comment from the wrong show but with the correct context (in the thread, they're talking about the correct show, but the comment itself doesn't make it explicit) is indipendently ranked second, without displaying any context.
 This results in the user being mislead by the wrong show title.
 
 
