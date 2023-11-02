@@ -1,5 +1,4 @@
 from .results import BenchmarkResults
-import matplotlib.pyplot as plt
 import benchmarking.creation_graph as creation_graph
 import app.query_to_string
 

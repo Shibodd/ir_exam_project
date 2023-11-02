@@ -1,12 +1,10 @@
 import asyncpraw
-import asyncprawcore
 import reddit.parsing
 import logging
 import reddit.filtering
 import asyncio
 from . import IndexManager
 import reddit.submission_archive
-import random
 
 logger = logging.getLogger(__name__)
 
