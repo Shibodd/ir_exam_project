@@ -12,7 +12,7 @@ Download the index (1.2GiB) at `https://github.com/Shibodd/ir_exam_project/relea
 
 # Usage
 
-To run benchmark and display results: `python3 benchmark.py indexdir ./the_benchmark -g`
+To run the benchmark and display results: `python3 benchmark.py indexdir ./the_benchmark -g`
 
 To perform a search: `python3 search.py indexdir <main_query> [sentiment_query]`
 
