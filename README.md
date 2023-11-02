@@ -29,4 +29,16 @@ Mild hate is scored 1.
 **Sentiment**: anger disgust
 
 
-### 
+### Comments are assumed to be independent and their tree structure is not used for context.
+Comments from which the user can infer the correct show title are scored 2.
+Comments which hint at the opening are scored 1.
+Misleading comments are scored 0, together with unrelevant ones.
+
+In this query, a comment with the correct context (in the thread, they're talking about the correct show) is indipendently ranked second, without displaying any context.
+This results in the user being mislead by the wrong show title.
+
+***UIN 4***: "I remember a show of which opening was a cover of a hungarian song. What's the show called?" <br/>
+**Content**: hungarian song cover <br/>
+**Sentiment**: EMPTY <br/>
+
+
