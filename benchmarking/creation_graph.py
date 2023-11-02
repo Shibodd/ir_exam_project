@@ -7,10 +7,10 @@ def creazione_grafico(dcg,idcg,query):
     n2=len(idcg)
     dcg_line=dcg
     idcg_line=idcg
-    colonna_x=np.arange(0,n1)
-    col_line_x=np.arange(0,n1)
-    colonna_x2=np.arange(0,n2)
-    col_line_x2=np.arange(0,n2)
+    colonna_x=np.arange(0.0,n1)
+    col_line_x=np.arange(0.0,n1)
+    colonna_x2=np.arange(0.0,n2)
+    col_line_x2=np.arange(0.0,n2)
     plt.figure(None,[10,10])
     plt.subplot(211)
     plt.xticks(colonna_x)
