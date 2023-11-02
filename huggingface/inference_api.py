@@ -31,16 +31,23 @@ async def classify_text(text: Union[list, str], model: str, wait_for_model=False
 
 
 async def blocking_classify_text(text: Union[list, str], model: str):
+  # We activate this only when we fail at least once
   wait_for_model = False
 
-  while True:
+  # Retry for a lmited amount of times
+  attempt = 0
+  while attempt < 4:
+    attempt += 1
     try:
       return await classify_text(text, model, wait_for_model)
     except Exception as e:
       logger.warning("Inference model exception: %s", str(e))
-      await asyncio.sleep(20)
+      await asyncio.sleep(30)
       wait_for_model = True
       pass
+    
+  logger.error("Out of attempts!! Dropping chunk.")
+  return tuple()
     #except InferenceAPIError as e:
     #  # If the API throws a loading error, try again only once
     #  if wait_for_model or e.status_code != 503 or 'loading' not in e.response_content['error']:
