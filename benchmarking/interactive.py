@@ -1,4 +1,5 @@
 import app
+import app.query_to_string
 import benchmarking
 import benchmarking.results
 import common_utils.arrays
@@ -22,7 +23,7 @@ def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQuer
       else:
         print("\n" * 10)
         
-        print(f"Query: content:({bqm.main_query}), sentiment:({bqm.sentiment_query})")
+        print(f"Query: {app.query_to_string.query_to_string(bqm.main_query, bqm.sentiment_query)}")
         print(f"Sentiment: {result['sentiment'].human_readable(0.1)}")
         print(f"Show: {result['title']} - Episode {result['episode']}")
         print("-"*20)
