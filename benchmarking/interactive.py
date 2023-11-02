@@ -66,6 +66,9 @@ def run(index_dir, benchmark_dir, interactive=True):
     # Discounted Cumulative Gain for this query
     query_dcg = benchmarking.dcg.compute_DCG(scores)
 
+    if query_dcg.shape[0] < query_idcg_lb.shape[0]:
+      query_idcg_lb = query_idcg_lb[:query_dcg.shape[0]]
+
     dcg_by_query.append(query_dcg)
     idcg_lb_by_query.append(query_idcg_lb)
     results.append(benchmarking.results.QueryResults(query_dcg, query_idcg_lb, bqm.main_query, bqm.sentiment_query))

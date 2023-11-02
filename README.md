@@ -43,7 +43,11 @@ This results in the user being mislead by the wrong show title.
 
 
 ### Documents and queries are preprocessed by tokenizing (on whitespace), lowercasing, removing stopwords and finally stemming.
+Comments which talk about the correct flying turtle and mention something that induces fear are ranked 2.
+Comments which just talk about the correct flying turtle are ranked 1.
+
+Note that we intentionally insert stopwords, add stems to terms and randomly use uppercase letters in the query. All of this is fixed by the preprocessing step.
 
 **UIN 5**: "I heard about a show in which the protagonist owns a fearsome flying turtle pet which has a laser cannon and can drop acid. What's it called?"
-**Content**: fly the TurTlIng acidic LASER cannon
+**Content**: the flying acidic TurTle with LASER cannon
 **Sentiment**: fear

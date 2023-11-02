@@ -19,8 +19,8 @@ def creazione_grafico(dcg,idcg,query):
 
     plt.grid(True)
     plt.title(query)
-    plt.xlabel('Comment Numbers')
-    plt.ylabel('Comments Rating')
-    plt.legend(['DCG','','IDCG Ideal',''])
+    plt.xlabel('Rank')
+    plt.ylabel('Gain')
+    plt.legend(['DCG','','IDCG',''])
     plt.show()
 
