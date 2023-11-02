@@ -88,3 +88,17 @@ Compare the above with
 **Sentiment**: EMPTY
 
 Note that because the UIN is the same, the comment scores are also the same.
+
+
+### Sentiment heavily affects the results of generic queries.
+**UIN 8**: "I love when characters develop in unpredictable ways. What are some shows i could watch?" <br/>
+**Content**: character development<br/>
+**Sentiment**: surprise
+
+Compare with
+
+**UIN 9**: "I'd like not to watch any shows for which people got angry at the character development. What shows should i avoid?"<br/>
+**Content**: character development<br/>
+**Sentiment**: anger OR disgust
+
+Please note that when benchmarking such generic queries the IDCG upper bound is worthless.
