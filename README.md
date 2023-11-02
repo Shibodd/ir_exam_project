@@ -8,7 +8,7 @@ Activate it: `./venv/Scripts/Activate.sh` or `./venv/Scripts/Activate.ps1` <br/>
 
 Install the dependencies with: `pip install -r requirements.txt`
 
-Download the index (1.2GiB): `wget URL`
+Download the index (1.2GiB) at `https://github.com/Shibodd/ir_exam_project/releases/download/index-v3/indexdir.7z` and extract the index directory with your favourite archive manager.
 
 # Usage
 
