@@ -101,4 +101,5 @@ Compare with
 **Content**: character development<br/>
 **Sentiment**: anger OR disgust
 
-Please note that when benchmarking such generic queries the IDCG upper bound is worthless.
+Please note that when benchmarking such generic queries the IDCG lower bound is worthless, as just a small part of the results has been scored.
+The other UINs, however, have been handpicked so that the result collection is known, and thus the IDCG lower bound is a decent approximation of the real value.
