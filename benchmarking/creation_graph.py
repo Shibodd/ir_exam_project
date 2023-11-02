@@ -3,19 +3,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def creazione_grafico(dcg,idcg,query):
-    n1=len(dcg)
-    n2=len(idcg)
-    dcg_line=dcg
-    idcg_line=idcg
-    colonna_x=np.arange(0.0,n1)
-    col_line_x=np.arange(0.0,n1)
-    colonna_x2=np.arange(0.0,n2)
-    col_line_x2=np.arange(0.0,n2)
+    dcg_x = np.arange(len(dcg) + 1)
+    dcg = np.concatenate((np.array([0]), dcg))
+
+    idcg_x = np.arange(len(idcg) + 1)
+    idcg = np.concatenate((np.array([0]), idcg))
+
     plt.figure(None,[10,10])
     plt.subplot(211)
-    plt.xticks(colonna_x)
-    plt.setp((plt.plot(colonna_x, dcg, 'bo', col_line_x, dcg_line, 'k')),'color','g')
-    plt.setp((plt.plot(colonna_x2, idcg, 'bo', col_line_x2, idcg_line, 'k')),'color','r')
+
+    plt.xticks(dcg_x)
+    plt.setp((plt.plot(dcg_x, dcg, 'bo', dcg_x, dcg, 'k')),'color','g')
+    plt.setp((plt.plot(idcg_x, idcg, 'bo', idcg_x, idcg, 'k')),'color','r')
 
     plt.grid(True)
     plt.title(query)
