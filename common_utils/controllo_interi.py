@@ -1,9 +1,8 @@
 def verifica():
-    print("inserire un punteggio da 0 a 2 (non rilevante, poco rilevante, rilevante)")
-    new_s=input("enter a number")
-    try:
-        new_s=int(new_s)
-        return new_s
-    except:
-        print("errore")
-        return verifica()
+  new_s = input("Enter a score (0 not relevant, 1 mildly relevant, 2 relevant): ")
+  try:
+    new_s=int(new_s)
+    return new_s
+  except:
+    print("That's not a number. Try again.")
+    return verifica()

@@ -5,9 +5,8 @@ from common_utils.arrays import largest_k
 
 def compute_DCG(result_relevances) -> np.ndarray:
   """ Computes the Discounted Cumulative Gain for the results. """
-  cumulative = np.cumsum(result_relevances)
   discounts = np.log2(np.arange(start=2, stop=len(result_relevances) + 2, dtype=int)) 
-  return cumulative / discounts
+  return np.cumsum(result_relevances / discounts)
 
 
 
@@ -22,7 +21,7 @@ def compute_ideal_DCG(all_scores: Iterable[int], dimension=None) -> np.array:
   all_relevances = np.fromiter(all_scores, dtype=int)
 
   if dimension is None or dimension == all_relevances.shape[0]:
-    scores = np.sort(all_relevances)
+    scores = np.flip(np.sort(all_relevances))
   else:
     if dimension > all_relevances.shape[0]:
       raise ValueError("Requested ideal DCG dimension is larger than the amount of documents in the index.")

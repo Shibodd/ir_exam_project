@@ -6,7 +6,7 @@ import pathlib
 import whoosh.index
 import common_utils.controllo_interi
 
-def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQueryManager, limit=50):
+def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQueryManager, limit=30):
   """
   Returns the score for each comment in the query results.
   If the comment was not previously scored, prompts the user to score the result.
@@ -15,15 +15,21 @@ def run_single_query(searcher: app.SearchEngine, bqm: benchmarking.BenchmarkQuer
   # Score vector in order of ranking (leftmost is the top result)
   scores = []
   
-  for result in searcher.search(bqm.main_query, bqm.sentiment_query):
-    score_app=bqm.get_score(result['comment_id'])
-    if score_app==0 or score_app==1 or score_app==2:
+  for result in searcher.search(bqm.main_query, bqm.sentiment_query, limit=limit):
+    score_app = bqm.get_score(result['comment_id'])
+    if score_app is not None:
       scores.append(score_app)
     else:
-      print("commento da votare :"+result['content'])
+      print("\n" * 10)
+      
+      print(f"Sentiment: {result['sentiment'].human_readable(0.1)}")
+      print(f"Show: {result['title']} - Episode {result['episode']}")
+      print("-"*20)
+      print(result['content'])
+      print("-"*20)
       score_app=common_utils.controllo_interi.verifica()
       print("\n"*10)
-      bqm.update_score(result['comment_id'],score_app)     
+      bqm.update_score(result['comment_id'], score_app)     
       scores.append(score_app)
 
     #non scrivere mentre guidi non rischiare!! 
