@@ -2,18 +2,22 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-def f(t):
-    return np.exp(-t) * np.cos(2*np.pi*t*t)
-
-def creazione_grafico(dcg,idcg):
+def creazione_grafico(dcg,idcg,query):
+    n1=len(dcg)
+    n2=len(idcg)
     dcg_line=dcg
     idcg_line=idcg
+    colonna_x=np.arange(0,n1)
+    col_line_x=np.arange(0,n1)
+    colonna_x2=np.arange(0,n2)
+    col_line_x2=np.arange(0,n2)
     plt.figure(None,[10,10])
     plt.subplot(211)
-    plt.setp((plt.plot(dcg, f(dcg), 'bo', dcg_line, f(dcg_line), 'k')),'color','g')
-    plt.setp((plt.plot(idcg, f(idcg), 'bo', idcg_line, f(idcg_line), 'k')),'color','r')
+    plt.xticks(colonna_x)
+    plt.setp((plt.plot(colonna_x, dcg, 'bo', col_line_x, dcg_line, 'k')),'color','g')
+    plt.setp((plt.plot(colonna_x2, idcg, 'bo', col_line_x2, idcg_line, 'k')),'color','r')
 
-    plt.title('Evaluation Comments')
+    plt.title('Evaluation Comments'+query+" ")
     plt.xlabel('Comment Numbers')
     plt.ylabel('Comments Rating')
     plt.legend(['DCG','','IDCG Ideal',''])
