@@ -12,6 +12,8 @@ Download the index (1.2GiB) at `https://github.com/Shibodd/ir_exam_project/relea
 
 # Usage
 
+Create your own reddit API account and edit async_index_creator.py if you want to recreate the index! I deleted the account in the source code.
+
 To run the benchmark and display results: `python3 benchmark.py indexdir ./the_benchmark -g`
 
 To perform a search: `python3 search.py indexdir <main_query> [sentiment_query]`
